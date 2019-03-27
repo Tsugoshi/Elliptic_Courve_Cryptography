@@ -1,0 +1,4 @@
+name: Elliptic-Courve-Cryptography
+dependencies:
+- python=3
+- pylint
