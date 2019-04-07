@@ -2,3 +2,4 @@ name: Elliptic-Courve-Cryptography
 dependencies:
 - python=3
 - pylint
+- conda-forge::cypari2

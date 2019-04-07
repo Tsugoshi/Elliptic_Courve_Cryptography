@@ -1,4 +1,6 @@
 from random import randrange, getrandbits, randint
+from Point import Point
+import cypari2 as cp
 
 class EllipticCourve:
     """
@@ -6,15 +8,16 @@ class EllipticCourve:
     y^2 = x^3 + Ax + B
     Modulo P
     """
-    P = 0
-    A = 0
-    B = 0
-    X = 0
-    Y = 0
-    Delta = 0
+    # P = 0
+    # A = 0
+    # B = 0
+    # X = 0
+    # Y = 0
+    # Delta = 0
 
     def __init__(self, bits=256):
         p = self.findPrime3Mod4(bits)
+        print("Prime number: " + str(p))
         self.P = p
         delta = 0
         while delta == 0 :
@@ -24,8 +27,8 @@ class EllipticCourve:
         self.A = a
         self.B = b
         self.Delta = delta
-        print("krzywa to y^2 = x^3 + "+ str(self.A) + "x + "+str(self.B))
-
+        self.printFunction()
+        
         while True :
             x = randrange(1,self.P)
             y2 = self.addMod(self.addMod(pow(x,3,self.P), self.multMod(a,x)), b)
@@ -35,7 +38,6 @@ class EllipticCourve:
         y = pow(y2,((self.P+1)//4),self.P)      
         self.Y = y
         print("X1 = " + str(x) + " Y1 = " + str(y))   
-
 
     def multMod(self, a, b):
         """
@@ -95,3 +97,8 @@ class EllipticCourve:
             a=(a*4)+3
             c=self.isPrime(a)
         return a
+
+    def printFunction(self):
+        """
+        """
+        print("y^2 = x^3 + "+ str(self.A) + "x + "+str(self.B))
