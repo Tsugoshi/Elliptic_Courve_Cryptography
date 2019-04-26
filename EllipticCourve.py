@@ -1,4 +1,5 @@
 from random import randrange, getrandbits, randint
+from Utils import addMod, multMod, findPrime3Mod4
 from Point import Point
 import cypari2 as cp
 
@@ -16,89 +17,32 @@ class EllipticCourve:
     # Delta = 0
 
     def __init__(self, bits=256):
-        p = self.findPrime3Mod4(bits)
-        print("Prime number: " + str(p))
+        p = findPrime3Mod4(bits)
         self.P = p
         delta = 0
         while delta == 0 :
             a = randint(1,10)
             b = randint(1,10)
-            delta = 4*a**3 + 27*b**2
+            delta = 4*(a**3) + 27*(b**2)
         self.A = a
         self.B = b
         self.Delta = delta
-        self.printFunction()
-        
+        self.Point = self.FindPointOnCourve()
+
+    def FindPointOnCourve(self):
         while True :
             x = randrange(1,self.P)
-            y2 = self.addMod(self.addMod(pow(x,3,self.P), self.multMod(a,x)), b)
-            if (pow(y2,(p-1)//2, p))==1 :
+            y2 = addMod(
+                addMod( pow(x,3,self.P), multMod(self.A,x,self.P), self.P)
+                ,self.B,self.P
+                )
+            if (pow(y2,(self.P-1)//2, self.P))==1 :
                 break
-        self.X = x
-        y = pow(y2,((self.P+1)//4),self.P)      
-        self.Y = y
-        print("X1 = " + str(x) + " Y1 = " + str(y))   
+        y = pow(y2,((self.P+1)//4),self.P)
+        # if pow(y,2,self.P)==y2:
+        #     print("Działa")      
+        point = Point(x,y,self)
+        return point
 
-    def multMod(self, a, b):
-        """
-        a*b mod(P)
-        """
-        return (a*b)%self.P
-
-    def addMod(self, a, b):
-        """
-        a+b (mod P)
-        """
-        return (a+b)%self.P
-
-
-    def isPrime(self, n, k=128):
-        """
-        Miller-Rabin algorithm implementation
-        Tests if number is prime
-            Args:
-                n - (int) number to test
-                k - (int) prob(`n` is prime) <= 2**(-`k`)
-            return True if n is prime
-        """
-        #for now, no need to check if even or if in (1,2)
-        #becouse we are using it for only large numbers with lsb set to 1
-        d = n - 1
-        s = 0
-        while d % 2 == 0:
-            d //= 2
-            s += 1
-        
-        for _ in range(k):
-            a = randrange(2, n-2)
-            x = pow(a,d,n)
-            if x==1 or x==n-1:
-                continue
-            for _ in range(s-1):
-                x = pow(x,2,n)
-                if x==1:
-                    return False
-            if x!=n-1:
-                return False
-        return True
-
-            
-
-    def findPrime3Mod4(self, n):
-        """
-        looging for n bit prime that is 3 mod(4)
-        n - nuber of bits in primme
-        """   
-        c=False
-        while c==False:
-            length = n
-            a = getrandbits(length-2)
-            a|=(1<<length-2-1)
-            a=(a*4)+3
-            c=self.isPrime(a)
-        return a
-
-    def printFunction(self):
-        """
-        """
-        print("y^2 = x^3 + "+ str(self.A) + "x + "+str(self.B))
+    def __str__(self):
+        return ("y^2 = x^3 + "+ str(self.A) + "x + "+str(self.B)+ " " + "mod: "+str(self.P))
