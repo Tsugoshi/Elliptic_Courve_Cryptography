@@ -38,6 +38,10 @@ class Point:
             return Point(0,0,self.Courve,True)
 
     def Multiply(self, n):
+        """
+        Adds points to itself n times using binary addition algorithm
+        for n=2^256 it will only need 256 addition
+        """
         bits = bin(n)[2:]
         Q = Point(0,0,self.Courve)
         for bit in bits :

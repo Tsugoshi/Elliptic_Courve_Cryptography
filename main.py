@@ -9,6 +9,6 @@ p2 = x.FindPointOnCourve()
 print(str(p2))
 print("2*p1 = "+str(p1+p1))
 print("p1 + p2 = " + str(p1+p2))
-print("3 * p1 = "+ str(p1.Multiply(6)))
-print("p1+p1+p1 = " + str(p1+p1+p1+p1+p1+p1))
+print("2^256 * p1 = "+ str(p1.Multiply(2**256)))
+#print("p1+p1+p1 = " + str(p1+p1+p1+p1+p1+p1))
 
